@@ -1,24 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const Quill = () => {
-  const [content, setContent] = useState('<div>hello world</div>');
+const Editor = () => {
+  const [value, setValue] = useState('');
+  const [html, setHtml] = useState('');
+  const quillRef = useRef(null); // Reference to the React Quill editor
 
-  const handleChange = (value) => {
-    setContent(value);
+  const handlePlainText = () => {
+    const editor = quillRef.current.getEditor(); // Access the Quill editor
+    const plainText = editor.getText(); // Get plain text content
+    setHtml(plainText);
+    // You can set this plain text value in your state or use it as needed
   };
-
-  console.log(content);
 
   return (
     <div>
-      <h3>HTML Tag Editor</h3>
-      <ReactQuill value={content} onChange={handleChange} />
-      <h3>Preview</h3>
-      <div dangerouslySetInnerHTML={{ __html: content }} />
+      <ReactQuill 
+        ref={quillRef} 
+        value={value} 
+        onChange={(e) => {
+          setValue(e);
+          handlePlainText(e);
+        }}
+      />
+      <div dangerouslySetInnerHTML={{__html: html}}></div>
     </div>
   );
-};
+}
 
-export default Quill;
+export default Editor;
